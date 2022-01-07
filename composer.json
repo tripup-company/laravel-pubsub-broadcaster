@@ -1,0 +1,45 @@
+{
+    "name": "tripup-company/laravel-pubsub-broadcaster",
+    "description": "Laravel google pub-sub broadcasting implementation",
+    "type": "library",
+    "version": "0.0.1",
+    "require": {
+        "laravel/framework": "*",
+        "spatie/laravel-package-tools": "^1.1",
+        "google/cloud-pubsub": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9.5.x-dev",
+        "orchestra/testbench": "6.x-dev"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "A.Lisnyak",
+            "email": "andrey.lisnyak@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "TripUp\\PubSub\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TripUp\\PubSub\\PubSubBroadcasterServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ]
+    }
+}
