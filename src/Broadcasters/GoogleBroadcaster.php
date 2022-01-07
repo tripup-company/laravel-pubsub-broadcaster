@@ -33,7 +33,6 @@ class GoogleBroadcaster implements Broadcaster
     {
         foreach($channels as $channel) {
             $topic = $this->getTopic($channel);
-
             $topic->publish([
                 'data' => $event,
                 'attributes' => $payload,
@@ -71,11 +70,6 @@ class GoogleBroadcaster implements Broadcaster
     private function getTopic(Channel $channel)
     {
         $topic = $this->client->topic($channel->name);
-
-        if(!$topic->exists()) {
-            $topic->create();
-        }
-
         return $topic;
     }
 }

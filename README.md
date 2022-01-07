@@ -5,10 +5,23 @@ Easily broadcast events to Google Pub/Sub with Laravel.
 ## Installation
 
 ```bash
-$ composer require whatdafox/laravel-google-pubsub-broadcaster
+$ composer require tripup-company/laravel-pubsub-broadcaster
 ```
 
 Laravel will detect the service provider automatically.
+
+After package installation you should add new driver to broadcast config file:
+```php
+...
+'connections' => [
+   ...     
+   'google-pubsub' => [
+     'driver' => 'google-pubsub',
+   ],
+   ...
+],
+...
+```
 
 ## Usage
 
@@ -16,8 +29,7 @@ Update your `.env` file:
 
 ```
 BROADCAST_DRIVER=google-pubsub
-GOOGLE_CLOUD_PROJECT=dev-moment-244207
-GOOGLE_APPLICATION_CREDENTIALS=gcloud.json
+GOOGLE_APPLICATION_CREDENTIALS=<path to your google credential file>
 ```
 
 Create an event and enable broadcasting:
@@ -25,108 +37,49 @@ Create an event and enable broadcasting:
 ```php
 <?php
 
-namespace App\Events;
+namespace TripUp\PubSub\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
 
-class TestEvent implements ShouldBroadcast
+class ExampleEvent implements ShouldBroadcastNow
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $someData;
+    // Pubsub message attributes
+    public $type="some event type";
+    public $entity = "some entyity name";
+    public $entityId = "some entity id";
+    public $payload;
 
     /**
-     * Create a new event instance.
-     *
-     * @param $someData
+     * @param $payload
      */
-    public function __construct($someData)
+    public function __construct($payload)
     {
-        $this->someData = $someData;
+        $this->payload = $payload;
     }
 
     /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * Returns pubsub tipic name
+     * @return \Illuminate\Broadcasting\Channel|\Illuminate\Broadcasting\Channel[]|string|string[]|void
      */
     public function broadcastOn()
     {
-        return new Channel('your-channel-name');
+        return new Channel("product-changed");
     }
-}
-```
-
-## Subscribe
-
-Package to subscribe to a topic will be coming soon. In the meantime, you can leverage the Google PubSub PHP library, for example:
-
-```php
-<?php
-
-namespace App\Console\Commands;
-
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Console\Command;
-use Google\Cloud\PubSub\PubSubClient;
-
-class TestCommand extends Command
-{
     /**
-     * The name and signature of the console command.
+     * Pubsub message body
      *
-     * @var string
+     * @return string
      */
-    protected $signature = 'pubsub:subscribe';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Subscribe to a Google PubSub channel';
-
-    /**
-     * Execute the console command.
-     *
-     * @param PubSubClient $client
-     * @return mixed
-     */
-    public function handle(PubSubClient $client)
+    public function broadcastAs()
     {
-        $topic = $client->topic('channel-name');
-        
-        if(!$topic->exists()) {
-            $topic->create();
-        }
-        
-        $subscription = $topic->subscription('subscriber-name');
-
-        if(!$subscription->exists()) {
-            $subscription->create();
-        }
-
-        while(true) {
-            $messages = $subscription->pull([
-                'returnImmediately' => true,
-                'maxMessages' => 5,
-            ]);
-
-            if(empty($messages)) {
-                continue;
-            }
-
-            foreach ($messages as $message) {
-                
-                // Do something with the message
-                
-                $subscription->acknowledge($message);
-            }
-        }
+        return 'Some application name';
     }
 }
 ```
+
+Next, in any place of your application:
+```php
+ \Event::dispatch(new ExampleEvent("Some payload"));
+```
+
