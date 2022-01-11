@@ -22,7 +22,27 @@ After package installation you should add new driver to broadcast config file:
 ],
 ...
 ```
+You can publish the config file with:
+```bash
+php artisan vendor:publish --provider="TripUp\PubSub\PubSubBroadcasterServiceProvider"
+```
 
+This is the contents of the published config file:
+```php
+return [
+    "key_file_path" => env("GOOGLE_APPLICATION_CREDENTIALS", base_path("key.json")),
+    'default_topic' => env("PUBSUB_DEFAULT_TOPIC", 'product-changed'),
+    'event_resolver' => \TripUp\PubSub\Resolvers\DefaultPubSubEventsResolver::class,
+    'app_name' => env("APP_NAME", 'Default app name'),
+
+    'actions' => ["created", "saved", "deleted"],
+    'models' => [
+        //...
+        // \App\Models\Product::class,
+    ],
+];
+
+```
 ## Usage
 
 Update your `.env` file:
@@ -82,4 +102,37 @@ Next, in any place of your application:
 ```php
  \Event::dispatch(new ExampleEvent("Some payload"));
 ```
+
+## Event listener registration
+
+In your EventService provider you should add new listeners:
+```php
+ protected $listen = [
+        ....
+        'eloquent.created:*' => [
+            PubSubEventListener::class,
+        ],
+        'eloquent.updated:*' => [
+            PubSubEventListener::class,
+        ],
+        'eloquent.saved:*' => [
+            PubSubEventListener::class,
+        ],
+        'eloquent.deleted:*' => [
+            PubSubEventListener::class,
+        ],
+        ...
+    ];
+```
+## Middleware 
+
+To auto sending of PubSubEvents you should add PubSubMiddleware to application kernel.
+
+## PubSub event resolver
+
+To separate useless eloquent events and prepare PubSubEvent 
+you should implement PubSubEventsResolver contract or use DefaultPubSubEventResolver.
+
+
+
 

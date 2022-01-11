@@ -19,7 +19,12 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
             preg_match_all($this->re, $item["event"], $matches, PREG_SET_ORDER, 0);
             $action = trim($matches[0][1]);
             $model = trim($matches[0][2]);
-            return new PubSubEvent($action, $model, "unknown");
+            return new PubSubEvent(
+                $action,
+                $model,
+                $item['payload'][0]->getAttribute("id"),
+                ["sku"=>"unknown"]
+            );
         })->toArray();
     }
 
@@ -48,6 +53,6 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
      */
     public function pushEvent($event, $data = [])
     {
-        $events[] = ['event' => $event, 'payload' => $data];
+        $this->events[] = ['event' => $event, 'payload' => $data];
     }
 }
