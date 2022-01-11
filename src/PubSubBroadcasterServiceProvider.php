@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\BroadcastManager;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use TripUp\PubSub\Broadcasters\GoogleBroadcaster;
+use TripUp\PubSub\Contracts\PubSubEventsResolver;
 
 class PubSubBroadcasterServiceProvider extends PackageServiceProvider
 {
@@ -17,6 +18,9 @@ class PubSubBroadcasterServiceProvider extends PackageServiceProvider
                 'keyFilePath' => config("pubsub.key_file_path"),
             ]);
             return new GoogleBroadcaster($client);
+        });
+        $this->app->singleton(PubSubEventsResolver::class, function ($app, $config) {
+            return $this->app->make(config("pubsub.event_resolver"));
         });
 
     }
