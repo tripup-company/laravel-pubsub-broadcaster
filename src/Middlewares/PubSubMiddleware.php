@@ -25,7 +25,7 @@ class PubSubMiddleware
      * @param \Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, \Closure $next)
     {
         return $next($request);
     }
