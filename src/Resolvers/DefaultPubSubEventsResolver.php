@@ -35,12 +35,14 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
     public function shouldPublish($event, $data = []): bool
     {
         $res = false;
-        $alloweActions = config("pubsub.actions");
-        $allowedModels = config("pubsub.models");
+        $config = config("pubsub.event_match");
+        $allowedActions = array_keys($config);
+
         if (preg_match_all($this->re, $event, $matches, PREG_SET_ORDER, 0)) {
             $action = trim($matches[0][1]);
             $model = trim($matches[0][2]);
-            $res = in_array($action, $alloweActions) && in_array($model, $allowedModels);
+            $allowedModels = config("pubsub.event_match.$action");
+            $res = in_array($action, $allowedActions) && in_array($model, $allowedModels);
         }
 
         return $res;
