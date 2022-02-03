@@ -6,11 +6,12 @@ return [
     'app_name' => env("APP_NAME", 'Default app name'),
 
     'event_match' => [
-        //ACTIONS
+        //Available actions https://laravel.com/docs/8.x/eloquent#events
         "created" => [
-            // \App\Models\Product::class
+            // Models class names
         ],
         "saved" => [],
         "deleted" => []
+        // ...
     ],
 ];

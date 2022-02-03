@@ -35,10 +35,14 @@ return [
     'event_resolver' => \TripUp\PubSub\Resolvers\DefaultPubSubEventsResolver::class,
     'app_name' => env("APP_NAME", 'Default app name'),
 
-    'actions' => ["created", "saved", "deleted"],
-    'models' => [
-        //...
-        // \App\Models\Product::class,
+    'event_match' => [
+        //Available actions https://laravel.com/docs/8.x/eloquent#events
+        "created" => [
+            // Models class names
+        ],
+        "saved" => [],
+        "deleted" => []
+        // ...
     ],
 ];
 

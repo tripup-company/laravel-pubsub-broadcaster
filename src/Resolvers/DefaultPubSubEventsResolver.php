@@ -2,6 +2,7 @@
 
 namespace TripUp\PubSub\Resolvers;
 
+use Illuminate\Database\Eloquent\Model;
 use TripUp\PubSub\Contracts\PubSubEventsResolver;
 use TripUp\PubSub\Events\PubSubEvent;
 
@@ -15,18 +16,31 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
 
     public function getPubSubEvents(): array
     {
-        return collect($this->events)->map(function ($item) {
-            preg_match_all($this->re, $item["event"], $matches, PREG_SET_ORDER, 0);
+        $res = [];
+        foreach ($this->events as $event => $payload) {
+            if (!preg_match_all($this->re, $event, $matches, PREG_SET_ORDER, 0)){
+                continue;
+            };
             $action = trim($matches[0][1]);
-            $model = trim($matches[0][2]);
-            return new PubSubEvent(
+            $entity = trim($matches[0][2]);
+            $entityInstance = array_pop($payload);
+            $entityId = null;
+            if ($entityInstance instanceof Model) {
+                $entityId = $entityInstance->getKey();
+            };
+            if (is_string($entityInstance)) {
+                $entityId = $entityInstance;
+            };
+            $res[] = new PubSubEvent(
                 $action,
-                $model,
-                $item['payload'][0]->getAttribute("id"),
-                ["sku"=>"unknown"]
+                $entity,
+                $entityId,
+                $payload
             );
-        })->toArray();
+        }
+        return $res;
     }
+
 
     /**
      * @param $event
@@ -55,6 +69,6 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
      */
     public function pushEvent($event, $data = [])
     {
-        $this->events[] = ['event' => $event, 'payload' => $data];
+        $this->events[$event] = $data;
     }
 }
