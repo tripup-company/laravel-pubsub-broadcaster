@@ -4,16 +4,16 @@ namespace TripUp\PubSub\Middlewares;
 
 
 use Illuminate\Support\Facades\Event;
-use TripUp\PubSub\Contracts\PubSubEventsResolver;
+use TripUp\PubSub\Contracts\EloquentEventResolver;
 
 class PubSubMiddleware
 {
     /**
-     * @var PubSubEventsResolver
+     * @var EloquentEventResolver
      */
     protected $pubSubResolver;
 
-    public function __construct(PubSubEventsResolver $pubSubResolver)
+    public function __construct(EloquentEventResolver $pubSubResolver)
     {
         $this->pubSubResolver = $pubSubResolver;
     }

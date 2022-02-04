@@ -85,7 +85,7 @@ class DefaultEloquentEventResolver implements EloquentEventResolver
         if (preg_match_all($this->re, $event, $matches, PREG_SET_ORDER, 0)) {
             $action = trim($matches[0][1]);
             $model = trim($matches[0][2]);
-            $allowedModels = config("pubsub.event_match.$action");
+            $allowedModels = $this->getAllowedModels($action);
             $res = in_array($action, $allowedActions) && in_array($model, $allowedModels);
         }
 
@@ -100,5 +100,19 @@ class DefaultEloquentEventResolver implements EloquentEventResolver
     public function pushEvent($event, $data = [])
     {
         $this->events[$event] = $data;
+    }
+
+    /**
+     * @param string $action
+     * @return array
+     */
+    protected function getAllowedModels(string $action): array
+    {
+        $allowedModels= [];
+        $models = config("pubsub.event_match.$action");
+        foreach ($models as $key => $item) {
+            $allowedModels[] = is_array($item) ? $key : $item;
+        }
+        return $allowedModels;
     }
 }

@@ -6,7 +6,7 @@ namespace Tests\unit\Services;
 use Tests\TestCase;
 use TripUp\PubSub\Contracts\EloquentEventResolver;
 
-class DefaultPubSubEventsResolverTest extends TestCase
+class DefaultEloquentEventResolverTest extends TestCase
 {
     /**
      * @var EloquentEventResolver
