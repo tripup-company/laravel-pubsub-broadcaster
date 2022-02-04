@@ -8,9 +8,9 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 class PubSubEvent implements ShouldBroadcastNow
 {
     /**
-     * @var array
+     * @var string
      */
-    public $payload = [];
+    public $payload;
     /**
      * @var string
      */
@@ -32,7 +32,7 @@ class PubSubEvent implements ShouldBroadcastNow
      */
     public function __construct(string $action, string $entity, string $entityId, array $payload = [])
     {
-        $this->payload = $payload;
+        $this->payload = json_encode($payload);
         $this->action = $action;
         $this->entity = $entity;
         $this->entityId = $entityId;

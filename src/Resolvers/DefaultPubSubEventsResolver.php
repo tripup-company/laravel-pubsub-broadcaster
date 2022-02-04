@@ -23,7 +23,7 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
             };
             $action = trim($matches[0][1]);
             $entity = trim($matches[0][2]);
-            $entityInstance = array_pop($payload);
+            $entityInstance = array_shift($payload);
             $entityId = null;
             if ($entityInstance instanceof Model) {
                 $entityId = $entityInstance->getKey();

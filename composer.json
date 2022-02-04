@@ -2,7 +2,7 @@
     "name": "tripup-company/laravel-pubsub-broadcaster",
     "description": "Laravel google pub-sub broadcasting implementation",
     "type": "library",
-    "version": "0.0.2",
+    "version": "1.0.0",
     "require": {
         "laravel/framework": "*",
         "spatie/laravel-package-tools": "^1.1",
