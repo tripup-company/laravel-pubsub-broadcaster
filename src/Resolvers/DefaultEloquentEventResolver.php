@@ -3,10 +3,14 @@
 namespace TripUp\PubSub\Resolvers;
 
 use Illuminate\Database\Eloquent\Model;
-use TripUp\PubSub\Contracts\PubSubEventsResolver;
+use Illuminate\Support\Arr;
+use TripUp\PubSub\Contracts\EloquentEventResolver;
 use TripUp\PubSub\Events\PubSubEvent;
 
-class DefaultPubSubEventsResolver implements PubSubEventsResolver
+/**
+ * Detect if an eloquent event should be processed and make PubSubEvent
+ */
+class DefaultEloquentEventResolver implements EloquentEventResolver
 {
     protected $re = '/^eloquent\.(\w+):\s+(.*)$/m';
     /**
@@ -14,6 +18,9 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
      */
     protected $events = [];
 
+    /**
+     * @return array
+     */
     public function getPubSubEvents(): array
     {
         $res = [];
@@ -27,6 +34,8 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
             $entityId = null;
             if ($entityInstance instanceof Model) {
                 $entityId = $entityInstance->getKey();
+                $payloadFields = config("pubsub.event_match.$action.$entity");
+                $payload = $this->buildPayload($payload, $entityInstance, $payloadFields);
             };
             if (is_string($entityInstance)) {
                 $entityId = $entityInstance;
@@ -41,6 +50,27 @@ class DefaultPubSubEventsResolver implements PubSubEventsResolver
         return $res;
     }
 
+    /**
+     * @param $payload
+     * @param Model $entityInstance
+     * @param $payloadFields
+     * @return mixed
+     */
+    public function buildPayload($payload, Model $entityInstance, $payloadFields)
+    {
+        if (!is_array($payloadFields)) {
+            return $payload;
+        }
+        foreach ($payloadFields as $field) {
+            $attributes = $entityInstance->getAttributes();
+            if (!Arr::has($attributes, $field)) {
+                continue;
+            }
+            $payload[$field] = $entityInstance->getAttributeValue($field);
+        }
+
+        return $payload;
+    }
 
     /**
      * @param $event

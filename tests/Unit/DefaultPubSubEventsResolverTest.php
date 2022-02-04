@@ -4,12 +4,12 @@
 namespace Tests\unit\Services;
 
 use Tests\TestCase;
-use TripUp\PubSub\Contracts\PubSubEventsResolver;
+use TripUp\PubSub\Contracts\EloquentEventResolver;
 
 class DefaultPubSubEventsResolverTest extends TestCase
 {
     /**
-     * @var PubSubEventsResolver
+     * @var EloquentEventResolver
      */
     private $service;
 
@@ -39,6 +39,6 @@ class DefaultPubSubEventsResolverTest extends TestCase
     {
         parent::setUp();
         $this->app['config']->set('pubsub.event_match.saved', ['App\Models\Product']);
-        $this->service = $this->app->make(PubSubEventsResolver::class);
+        $this->service = $this->app->make(EloquentEventResolver::class);
     }
 }

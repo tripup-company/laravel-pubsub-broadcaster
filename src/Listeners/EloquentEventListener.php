@@ -2,19 +2,19 @@
 
 namespace TripUp\PubSub\Listeners;
 
-use TripUp\PubSub\Contracts\PubSubEventsResolver;
+use TripUp\PubSub\Contracts\EloquentEventResolver;
 
-class PubSubEventListener
+class EloquentEventListener
 {
     /**
-     * @var PubSubEventsResolver
+     * @var EloquentEventResolver
      */
     protected $eventsResolver;
 
     /**
-     * @param PubSubEventsResolver $eventsResolver
+     * @param EloquentEventResolver $eventsResolver
      */
-    public function __construct(PubSubEventsResolver $eventsResolver)
+    public function __construct(EloquentEventResolver $eventsResolver)
     {
         $this->eventsResolver = $eventsResolver;
     }

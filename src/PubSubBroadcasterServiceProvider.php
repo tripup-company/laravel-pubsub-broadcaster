@@ -7,7 +7,8 @@ use Illuminate\Broadcasting\BroadcastManager;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use TripUp\PubSub\Broadcasters\GoogleBroadcaster;
-use TripUp\PubSub\Contracts\PubSubEventsResolver;
+use TripUp\PubSub\Contracts\EloquentEventResolver;
+
 
 class PubSubBroadcasterServiceProvider extends PackageServiceProvider
 {
@@ -19,7 +20,7 @@ class PubSubBroadcasterServiceProvider extends PackageServiceProvider
             ]);
             return new GoogleBroadcaster($client);
         });
-        $this->app->singleton(PubSubEventsResolver::class, function ($app, $config) {
+        $this->app->singleton(EloquentEventResolver::class, function ($app, $config) {
             return $this->app->make(config("pubsub.event_resolver"));
         });
 

@@ -28,11 +28,12 @@ php artisan vendor:publish --provider="TripUp\PubSub\PubSubBroadcasterServicePro
 ```
 
 This is the contents of the published config file:
+
 ```php
 return [
     "key_file_path" => env("GOOGLE_APPLICATION_CREDENTIALS", base_path("key.json")),
     'default_topic' => env("PUBSUB_DEFAULT_TOPIC", 'product-changed'),
-    'event_resolver' => \TripUp\PubSub\Resolvers\DefaultPubSubEventsResolver::class,
+    'event_resolver' => \TripUp\PubSub\Resolvers\DefaultEloquentEventResolver::class,
     'app_name' => env("APP_NAME", 'Default app name'),
 
     'event_match' => [
@@ -114,16 +115,16 @@ In your EventService provider you should add new listeners:
  protected $listen = [
         ....
         'eloquent.created:*' => [
-            PubSubEventListener::class,
+            EloquentEventListener::class,
         ],
         'eloquent.updated:*' => [
-            PubSubEventListener::class,
+            EloquentEventListener::class,
         ],
         'eloquent.saved:*' => [
-            PubSubEventListener::class,
+            EloquentEventListener::class,
         ],
         'eloquent.deleted:*' => [
-            PubSubEventListener::class,
+            EloquentEventListener::class,
         ],
         ...
     ];
@@ -135,7 +136,7 @@ To auto sending of PubSubEvents you should add PubSubMiddleware to application k
 ## PubSub event resolver
 
 To separate useless eloquent events and prepare PubSubEvent 
-you should implement PubSubEventsResolver contract or use DefaultPubSubEventResolver.
+you should implement PubSubEventsResolver contract or use DefaultEloquentEventResolver.
 
 
 

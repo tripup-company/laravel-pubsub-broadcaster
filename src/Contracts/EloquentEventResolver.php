@@ -2,7 +2,7 @@
 
 namespace TripUp\PubSub\Contracts;
 
-interface PubSubEventsResolver
+interface EloquentEventResolver
 {
     /**
      * @param $event
