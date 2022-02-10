@@ -2,10 +2,10 @@
 namespace TripUp\PubSub\Broadcasters;
 
 use Google\Cloud\PubSub\PubSubClient;
+use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Contracts\Broadcasting\Broadcaster;
 
-class GoogleBroadcaster implements Broadcaster
+class GoogleBroadcaster extends Broadcaster
 {
 
     /**
