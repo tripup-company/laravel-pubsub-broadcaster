@@ -2,11 +2,11 @@
     "name": "tripup-company/laravel-pubsub-broadcaster",
     "description": "Laravel google pub-sub broadcasting implementation",
     "type": "library",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "require": {
         "laravel/framework": "*",
         "spatie/laravel-package-tools": "^1.1",
-        "google/cloud-pubsub": "dev-master"
+        "google/cloud-pubsub": "dev-main"
     },
     "require-dev": {
         "phpunit/phpunit": "9.5.x-dev",
